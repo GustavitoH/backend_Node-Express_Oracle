@@ -3,24 +3,28 @@ const { cns } = require('../config/index');
 
 const getProductos = async (req, res) => {
   const conn = await oracledb.getConnection(cns);
-  const response = await conn.execute('SELECT * FROM PRODUCTO');
-  res.status(200).json(response.rows);
+  const result = await conn.execute('SELECT * FROM PRODUCTO', [], {
+    outFormat: oracledb.OUT_FORMAT_OBJECT,
+  });
+  res.status(200).json(result.rows);
 };
 
 const createProducto = async (req, res) => {
   const conn = await oracledb.getConnection(cns);
   const { producto, precio, descripcion, cantidad } = req.body;
-  const response = await conn.execute(
-    `INSERT INTO (producto, precio, descripcion, cantidad) VALUES (${producto},${precio},${descripcion},${cantidad});`
+  const sql = await conn.execute(
+    'CALL Insertar_Producto(:producto,:precio,:descripcion,:cantidad)',
+    [producto, precio, descripcion, cantidad],
+    { autoCommit: true }
   );
-  if (response) {
+  if (sql) {
     res.json({
-      message: 'Guardado con éxito',
+      message: 'Producto insertado con éxito',
     });
   }
-  if (!response) {
+  if (!sql) {
     res.json({
-      message: 'Guardado no realizado',
+      message: 'Error de insertado',
     });
   }
 };
@@ -29,35 +33,19 @@ const updateProducto = async (req, res) => {
   const conn = await oracledb.getConnection(cns);
   const id = parseInt(req.params.id);
   const { producto, precio, descripcion, cantidad } = req.body;
-  const response = await conn.execute(
-    `execute producto_update(${id},${producto},${precio},${descripcion},${cantidad});`
+  const sql = await conn.execute(
+    'CALL ACTUALIZAR_PRODUCTO(:id,:producto,:precio,:descripcion,:cantidad)',
+    [id, producto, precio, descripcion, cantidad],
+    { autoCommit: true }
   );
-  if (response) {
+  if (sql) {
     res.json({
-      message: 'Actualización exitosa',
+      message: 'Producto modificado con éxito',
     });
   }
-  if (!response) {
+  if (!sql) {
     res.json({
-      message: 'Actualización no realizada',
-    });
-  }
-};
-
-const deleteProducto = async (req, res) => {
-  const conn = await oracledb.getConnection(cns);
-  const id = parseInt(req.params.id);
-  const response = await conn.execute(`delete from producto where id=${id}`);
-  if (response) {
-    res.json({
-      message: 'Eliminación exitosa',
-      estado: true,
-    });
-  }
-  if (!response) {
-    res.json({
-      message: 'Eliminación no realizada',
-      estado: false,
+      message: 'Error de modificación',
     });
   }
 };
@@ -66,5 +54,4 @@ module.exports = {
   getProductos,
   createProducto,
   updateProducto,
-  deleteProducto,
 };

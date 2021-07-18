@@ -27,6 +27,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use(require('./src/routes/productoRoutes'));
+app.use(require('./src/routes/facturaRoutes'));
+app.use(require('./src/routes/detalle_facturaRoutes'));
+app.use(require('./src/routes/kardexRoutes'));
 
 app.listen(config.localport, function () {
   console.log(`Listening http://localhost:${config.localport}`);

@@ -77,40 +77,71 @@ BEGIN
 SELECT ai_kardex.NEXTVAL INTO :NEW.id FROM DUAL;
 END;
 
-INSERT INTO KARDEX(producto, fecha, accion) VALUES('Celular', SYSDATE, 'Se vendieron 2 artículos');
+INSERT INTO KARDEX(producto, fecha, accion) VALUES('Celular', SYSDATE, 'Se vendieron 2 ARTICULOS');
 ------------------------------------------------ PROCEDIMIENTOS ALMACENADOS ----------------------------------------------------------------------------------------------------------------
 -- INSERTAR PRODUCTO
-create or replace PROCEDURE Insertar_Producto(producto VARCHAR2, precio NUMBER, descripcion VARCHAR2, cantidad NUMBER)
+CREATE OR REPLACE PROCEDURE Insertar_Producto(producto VARCHAR2, precio NUMBER, descripcion VARCHAR2, cantidad NUMBER)
 is
 begin
-  IF precio > 0 THEN
-      INSERT INTO PRODUCTO (PRODUCTO, PRECIO, DESCRIPCION, CANTIDAD) VALUES (producto, precio, descripcion, cantidad);
-      DBMS_OUTPUT.PUT_LINE('PRODUCTO INGRESADO EXISTOSAMENTE');
-  ELSE
-      DBMS_OUTPUT.PUT_LINE('PRECIO DE PRODUCTO NO VALIDO');
+  IF (precio > 0 AND cantidad >= 0) THEN
+    INSERT INTO PRODUCTO (PRODUCTO, PRECIO, DESCRIPCION, CANTIDAD) VALUES (producto, precio, descripcion, cantidad);
+    DBMS_OUTPUT.PUT_LINE('PRODUCTO INGRESADO EXISTOSAMENTE');
+    COMMIT;
+  ELSE 
+      DBMS_OUTPUT.PUT_LINE('ERROR AL INSERTAR!');
   END IF;
 END;
 
---EJECUCIÓN
-EXEC Insertar_Producto('Teclado', 10.20, 'Color negro', 12);
-select * from COUNTRIES;
+--EJECUCION
+EXEC Insertar_Producto('Monitor MMM', 5, 'Color negro', 0);
 
--- INSERTAR PRODUCTO
-create or replace PROCEDURE Insertar_Producto(producto VARCHAR2, precio NUMBER, descripcion VARCHAR2, cantidad NUMBER)
+-- ACTUALIZAR PRODUCTO
+CREATE OR REPLACE PROCEDURE Actualizar_Producto(id1 NUMBER, producto1 VARCHAR2, precio1 NUMBER, descripcion1 VARCHAR2, cantidad1 NUMBER)
 is
 begin
-  IF precio > 0 THEN
-      INSERT INTO PRODUCTO (PRODUCTO, PRECIO, DESCRIPCION, CANTIDAD) VALUES (producto, precio, descripcion, cantidad);
-      DBMS_OUTPUT.PUT_LINE('PRODUCTO INGRESADO EXISTOSAMENTE');
-  ELSE
-      DBMS_OUTPUT.PUT_LINE('PRECIO DE PRODUCTO NO VALIDO');
+  IF (precio1 > 0 AND cantidad1 >= 0) THEN
+        UPDATE PRODUCTO SET PRODUCTO=producto1, PRECIO=precio1, DESCRIPCION=descripcion1, CANTIDAD=cantidad1 WHERE ID=id1;
+    DBMS_OUTPUT.PUT_LINE('PRODUCTO MODIFICADO EXISTOSAMENTE');
+    COMMIT;
+  ELSE 
+      DBMS_OUTPUT.PUT_LINE('MODIFICACION NO VALIDA');
   END IF;
 END;
 
---EJECUCIÓN
-EXEC Insertar_Producto('Teclado', 10.20, 'Color negro', 12);
-select * from COUNTRIES;
+--EJECUTAR
+EXEC Actualizar_Producto(81, 'Monitor', 500, 'Color negro', 7);
 
+-- INSERTAR FACTURA
+CREATE OR REPLACE PROCEDURE Insertar_Factura(cliente VARCHAR2, subtotal NUMBER, total NUMBER)
+is
+begin
+  IF (total > 0) THEN
+    INSERT INTO FACTURA (CLIENTE, FECHA, SUBTOTAL, TOTAL) VALUES (cliente, SYSDATE, subtotal, total);
+    DBMS_OUTPUT.PUT_LINE('FACTURA INGRESADA EXISTOSAMENTE');
+    COMMIT;
+  ELSE 
+      DBMS_OUTPUT.PUT_LINE('ERROR AL INSERTAR!');
+  END IF;
+END;
+
+--EJECUCION
+EXEC Insertar_Factura('Karla Aguilar', 10.50, 15.50);
+
+-- INSERTAR DETALLE_FACTURA
+CREATE OR REPLACE PROCEDURE Insertar_DetalleFactura(id_factura NUMBER, id_producto NUMBER, cantidad NUMBER, preciounit NUMBER, precio NUMBER)
+is
+begin
+  IF (cantidad > 0 AND preciounit > 0 AND precio > 0) THEN
+    INSERT INTO DETALLE_FACTURA (ID_FACTURA, ID_PRODUCTO, CANTIDAD, PRECIOUNIT, PRECIO) VALUES (id_factura, id_producto, cantidad, preciounit, precio);
+    DBMS_OUTPUT.PUT_LINE('DETALLE FACTURA INGRESADO EXISTOSAMENTE');
+    COMMIT;
+  ELSE 
+      DBMS_OUTPUT.PUT_LINE('ERROR AL INSERTAR!');
+  END IF;
+END;
+
+--EJECUCION
+EXEC Insertar_DetalleFactura(45,81,1,10,20);
 ------------------------------------------------ TRIGGERS ----------------------------------------------------------------------------------------------------------------
 -- CONTROLAR STOCK
 CREATE OR REPLACE TRIGGER "TRIGGER_CONTROL_STOCK" AFTER INSERT ON DETALLE_FACTURA FOR EACH ROW
@@ -138,16 +169,15 @@ AFTER INSERT OR UPDATE OR DELETE ON DETALLE_FACTURA FOR EACH ROW
     select FACTURA.FECHA into fecha_factura FROM FACTURA WHERE factura.id = :new.ID_FACTURA;    
     
     IF INSERTING THEN        
-    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE INGRESARON ' || cantidad_producto || ' ARTÍCULOS.' );    
+    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE VENDIERON ' || cantidad_producto || ' ART�CULOS.' );    
     END IF;
     IF UPDATING THEN    
-    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE MODIFICARON ' || cantidad_producto || ' ARTÍCULOS.');    
+    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE VENDIERON ' || cantidad_producto || ' ART�CULOS.');    
     END IF;
     IF DELETING THEN    
-    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE ELIMINARON ' || cantidad_producto || ' ARTÍCULOS.');    
+    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE VENDIERON ' || cantidad_producto || ' ART�CULOS.');    
     END IF;
 END;
-
 
 ---------------------------FUNCTIONS---------------------------
 /*
