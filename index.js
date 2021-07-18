@@ -26,7 +26,7 @@ app.use(function (req, res, next) {
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use(require('./src/routes/usersRoutes'));
+app.use(require('./src/routes/productoRoutes'));
 
 app.listen(config.localport, function () {
   console.log(`Listening http://localhost:${config.localport}`);

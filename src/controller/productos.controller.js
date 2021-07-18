@@ -1,5 +1,5 @@
 const oracledb = require('oracledb');
-const { cns } = require("../config/index")
+const { cns } = require('../config/index');
 
 const getProductos = async (req, res) => {
   const conn = await oracledb.getConnection(cns);
@@ -9,9 +9,9 @@ const getProductos = async (req, res) => {
 
 const createProducto = async (req, res) => {
   const conn = await oracledb.getConnection(cns);
-  const { producto, precio, descripcion, cantidad} = req.body;
+  const { producto, precio, descripcion, cantidad } = req.body;
   const response = await conn.execute(
-  `execute producto_insertar(${producto},${precio},${descripcion},${cantidad});`
+    `INSERT INTO (producto, precio, descripcion, cantidad) VALUES (${producto},${precio},${descripcion},${cantidad});`
   );
   if (response) {
     res.json({
@@ -28,7 +28,7 @@ const createProducto = async (req, res) => {
 const updateProducto = async (req, res) => {
   const conn = await oracledb.getConnection(cns);
   const id = parseInt(req.params.id);
-  const { producto, precio, descripcion, cantidad} = req.body;
+  const { producto, precio, descripcion, cantidad } = req.body;
   const response = await conn.execute(
     `execute producto_update(${id},${producto},${precio},${descripcion},${cantidad});`
   );
@@ -47,9 +47,7 @@ const updateProducto = async (req, res) => {
 const deleteProducto = async (req, res) => {
   const conn = await oracledb.getConnection(cns);
   const id = parseInt(req.params.id);
-  const response = await conn.execute(
-    `delete from producto where id=${id}`
-  );
+  const response = await conn.execute(`delete from producto where id=${id}`);
   if (response) {
     res.json({
       message: 'Eliminación exitosa',
@@ -63,7 +61,6 @@ const deleteProducto = async (req, res) => {
     });
   }
 };
-
 
 module.exports = {
   getProductos,

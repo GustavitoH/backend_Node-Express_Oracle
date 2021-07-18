@@ -1,10 +1,30 @@
 const { Router } = require('express');
 const router = Router();
 
-const { getProductos, createProducto,deleteProducto,updateProducto} = require('../controller/productos.controller');
-const { getFactura, createFactura,updateFactura,deleteFactura} = require('../controller/facturas.controller');
-const { getDetalle_Factura, createDetalle_Factura,updateDetalle_Factura,deleteDetalle_Factura} = require('../controller/detalle_facturas.controller');
-const { getKardex, createKardex,updateKardex,deleteKardex} = require('../controller/kardex.controller');
+const {
+  getProductos,
+  createProducto,
+  deleteProducto,
+  updateProducto,
+} = require('../controller/productos.controller');
+const {
+  getFactura,
+  createFactura,
+  updateFactura,
+  deleteFactura,
+} = require('../controller/facturas.controller');
+const {
+  getDetalle_Factura,
+  createDetalle_Factura,
+  updateDetalle_Factura,
+  deleteDetalle_Factura,
+} = require('../controller/detalle_facturas.controller');
+const {
+  getKardex,
+  createKardex,
+  updateKardex,
+  deleteKardex,
+} = require('../controller/kardex.controller');
 
 router.get('/productos', getProductos);
 router.post('/productos', createProducto);
