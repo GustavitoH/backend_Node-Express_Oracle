@@ -50,8 +50,52 @@ const updateProducto = async (req, res) => {
   }
 };
 
+const deleteProducto = async (req, res) => {
+  const conn = await oracledb.getConnection(cns);
+  const id = parseInt(req.params.id);
+  const sql = await conn.execute('DELETE PRODUCTO WHERE ID = :id', [id], {
+    autoCommit: true,
+  });
+  if (sql) {
+    res.json({
+      message: 'Producto eliminado con éxito',
+    });
+  }
+  if (!sql) {
+    res.json({
+      message: 'Error al eliminar',
+    });
+  }
+};
+
+const getProductoMenosVendido = async (req, res) => {
+  const conn = await oracledb.getConnection(cns);
+  const result = await conn.execute(
+    'SELECT PRODUCTO_MENOS_VENDIDO FROM DUAL',
+    [],
+    {
+      outFormat: oracledb.OUT_FORMAT_OBJECT,
+    }
+  );
+  res.status(200).json(result.rows);
+};
+const getProductoMasVendido = async (req, res) => {
+  const conn = await oracledb.getConnection(cns);
+  const result = await conn.execute(
+    'SELECT PRODUCTO_MAS_VENDIDO FROM DUAL',
+    [],
+    {
+      outFormat: oracledb.OUT_FORMAT_OBJECT,
+    }
+  );
+  res.status(200).json(result.rows);
+};
+
 module.exports = {
   getProductos,
   createProducto,
   updateProducto,
+  deleteProducto,
+  getProductoMenosVendido,
+  getProductoMasVendido,
 };
