@@ -4,7 +4,7 @@ const { cns } = require('../config/index');
 const getKardex = async (req, res) => {
   const conn = await oracledb.getConnection(cns);
   const result = await conn.execute(
-    'SELECT ID, PRODUCTO, TRUNC(FECHA), ACCION FROM KARDEX',
+    'SELECT ID, PRODUCTO, FECHA, ACCION FROM KARDEX',
     [],
     {
       outFormat: oracledb.OUT_FORMAT_OBJECT,
