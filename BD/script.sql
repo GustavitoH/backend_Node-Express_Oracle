@@ -42,7 +42,7 @@ BEGIN
 SELECT ai_factura.NEXTVAL INTO :NEW.id FROM DUAL;
 END;
 
-INSERT INTO FACTURA(cliente, fecha, subtotal, total) VALUES('David Millán', SYSDATE, 100, 112);
+INSERT INTO FACTURA(cliente, fecha, subtotal, total) VALUES('David MillÃ¡n', SYSDATE, 100, 112);
 INSERT INTO FACTURA(cliente, fecha, subtotal, total) VALUES('Kevin Pillacela', SYSDATE, 80, 100);
 INSERT INTO FACTURA(cliente, fecha, subtotal, total) VALUES('Joel Cujilema', SYSDATE, 300, 320);
 INSERT INTO FACTURA(cliente, fecha, subtotal, total) VALUES('Joseph Alejandro', SYSDATE, 320, 350);
@@ -169,19 +169,19 @@ AFTER INSERT OR UPDATE OR DELETE ON DETALLE_FACTURA FOR EACH ROW
     select FACTURA.FECHA into fecha_factura FROM FACTURA WHERE factura.id = :new.ID_FACTURA;    
     
     IF INSERTING THEN        
-    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE VENDIERON ' || cantidad_producto || ' ART�CULOS.' );    
+    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE VENDIERON ' || cantidad_producto || ' ARTÍCULOS.' );    
     END IF;
     IF UPDATING THEN    
-    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE VENDIERON ' || cantidad_producto || ' ART�CULOS.');    
+    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE VENDIERON ' || cantidad_producto || ' ARTÍCULOS.');    
     END IF;
     IF DELETING THEN    
-    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE VENDIERON ' || cantidad_producto || ' ART�CULOS.');    
+    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE VENDIERON ' || cantidad_producto || ' ARTÍCULOS.');    
     END IF;
 END;
 
 ---------------------------FUNCTIONS---------------------------
 /*
-*Función que retorna el producto más vendido con la cantidad
+*FunciÃ³n que retorna el producto mÃ¡s vendido con la cantidad
 */
 CREATE OR REPLACE FUNCTION producto_mas_vendido
 RETURN VARCHAR IS
@@ -199,7 +199,7 @@ END;
 SELECT PRODUCTO_MAS_VENDIDO FROM DUAL;
 
 /*
-*Función que retorna el producto menos vendido con la cantidad
+*FunciÃ³n que retorna el producto menos vendido con la cantidad
 */
 CREATE OR REPLACE FUNCTION producto_menos_vendido
 RETURN VARCHAR IS
@@ -236,11 +236,10 @@ END;
 SELECT TOTAL_VENTA_HOY FROM DUAL;
 
 ----------------CREATE VIEWS------------------
-CREATE VIEW V_DETALLE_FACTURA AS SELECT PR.PRODUCTO, DE.CANTIDAD, DE.PRECIOUNIT, DE.PRECIO 
+CREATE OR REPLACE VIEW V_DETALLE_FACTURA AS SELECT PR.PRODUCTO, DE.CANTIDAD, DE.PRECIOUNIT, DE.PRECIO 
 FROM DETALLE_FACTURA DE INNER JOIN PRODUCTO PR ON PR.ID = DE.ID_PRODUCTO;
 
 SELECT * FROM V_DETALLE_FACTURA;
 
  SELECT SUM(CANTIDAD) FROM PRODUCTO;
  
- ----------------TRIGGER------------------
