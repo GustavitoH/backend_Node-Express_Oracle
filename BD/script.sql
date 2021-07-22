@@ -169,13 +169,13 @@ AFTER INSERT OR UPDATE OR DELETE ON DETALLE_FACTURA FOR EACH ROW
     select FACTURA.FECHA into fecha_factura FROM FACTURA WHERE factura.id = :new.ID_FACTURA;    
     
     IF INSERTING THEN        
-    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE VENDIERON ' || cantidad_producto || ' ARTÍCULOS.' );    
+    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE VENDIERON ' || cantidad_producto || ' ARTï¿½CULOS.' );    
     END IF;
     IF UPDATING THEN    
-    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE VENDIERON ' || cantidad_producto || ' ARTÍCULOS.');    
+    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE VENDIERON ' || cantidad_producto || ' ARTï¿½CULOS.');    
     END IF;
     IF DELETING THEN    
-    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE VENDIERON ' || cantidad_producto || ' ARTÍCULOS.');    
+    INSERT INTO KARDEX (PRODUCTO, FECHA, ACCION) VALUES(nombre_producto, fecha_factura, 'SE VENDIERON ' || cantidad_producto || ' ARTï¿½CULOS.');    
     END IF;
 END;
 
@@ -215,6 +215,26 @@ BEGIN
 END;
 
 SELECT PRODUCTO_MENOS_VENDIDO FROM DUAL;
+
+
+/*
+*Funcion que retorna el total de ventas del dia
+*/
+CREATE OR REPLACE FUNCTION TOTAL_VENTA_HOY
+RETURN NUMBER IS
+TOTAL_VENDIDO NUMBER;
+NUMERO_FILAS NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO NUMERO_FILAS FROM FACTURA WHERE TRUNC(FECHA) = TRUNC(SYSDATE);
+  IF NUMERO_FILAS > 0 THEN
+    SELECT TOTAL INTO TOTAL_VENDIDO FROM FACTURA WHERE TRUNC(FECHA) = TRUNC(SYSDATE);
+  ELSE
+      TOTAL_VENDIDO := 0;
+  END IF;
+  RETURN TOTAL_VENDIDO;
+END;
+
+SELECT TOTAL_VENTA_HOY FROM DUAL;
 
 ----------------CREATE VIEWS------------------
 CREATE VIEW V_DETALLE_FACTURA AS SELECT PR.PRODUCTO, DE.CANTIDAD, DE.PRECIOUNIT, DE.PRECIO 
