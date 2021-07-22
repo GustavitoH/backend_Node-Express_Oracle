@@ -9,6 +9,18 @@ const getDetalle_Factura = async (req, res) => {
   res.status(200).json(result.rows);
 };
 
+const getIdFactura = async (req, res) => {
+  const conn = await oracledb.getConnection(cns);
+  const result = await conn.execute(
+    'SELECT ID FROM (SELECT ID FROM FACTURA ORDER BY ID DESC) WHERE rownum <= 1',
+    [],
+    {
+      outFormat: oracledb.OUT_FORMAT_OBJECT,
+    }
+  );
+  res.status(200).json(result.rows);
+};
+
 const createDetalle_Factura = async (req, res) => {
   const conn = await oracledb.getConnection(cns);
   const { id_factura, id_producto, cantidad, preciounit, precio } = req.body;
@@ -31,5 +43,6 @@ const createDetalle_Factura = async (req, res) => {
 
 module.exports = {
   getDetalle_Factura,
+  getIdFactura,
   createDetalle_Factura,
 };

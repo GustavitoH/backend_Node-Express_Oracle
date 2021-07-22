@@ -18,7 +18,7 @@ const createFactura = async (req, res) => {
     { autoCommit: true }
   );
   if (sql) {
-    res.json({
+    res.status(201).json({
       message: 'Factura insertada con éxito',
     });
   }
