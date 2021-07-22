@@ -3,7 +3,7 @@ const { cns } = require('../config/index');
 
 const getProductos = async (req, res) => {
   const conn = await oracledb.getConnection(cns);
-  const result = await conn.execute('SELECT * FROM PRODUCTO', [], {
+  const result = await conn.execute('SELECT * FROM PRODUCTO ORDER BY ID', [], {
     outFormat: oracledb.OUT_FORMAT_OBJECT,
   });
   res.status(200).json(result.rows);
@@ -90,6 +90,25 @@ const getProductoMasVendido = async (req, res) => {
   );
   res.status(200).json(result.rows);
 };
+const getTotalProductos = async (req, res) => {
+  const conn = await oracledb.getConnection(cns);
+  const result = await conn.execute(
+    'SELECT SUM(CANTIDAD) AS TOTAL FROM PRODUCTO',
+    [],
+    {
+      outFormat: oracledb.OUT_FORMAT_OBJECT,
+    }
+  );
+  res.status(200).json(result.rows);
+};
+
+const getTotalVentas = async (req, res) => {
+  const conn = await oracledb.getConnection(cns);
+  const result = await conn.execute('SELECT TOTAL_VENTA_HOY FROM DUAL', [], {
+    outFormat: oracledb.OUT_FORMAT_OBJECT,
+  });
+  res.status(200).json(result.rows);
+};
 
 module.exports = {
   getProductos,
@@ -98,4 +117,6 @@ module.exports = {
   deleteProducto,
   getProductoMenosVendido,
   getProductoMasVendido,
+  getTotalProductos,
+  getTotalVentas,
 };
