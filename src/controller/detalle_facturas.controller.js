@@ -3,7 +3,7 @@ const { cns } = require('../config/index');
 
 const getDetalle_Factura = async (req, res) => {
   const conn = await oracledb.getConnection(cns);
-  const result = await conn.execute('SELECT * FROM DETALLE_FACTURA', [], {
+  const result = await conn.execute('SELECT DE.ID_FACTURA, PR.PRODUCTO, DE.CANTIDAD, DE.PRECIOUNIT, DE.PRECIO FROM DETALLE_FACTURA DE INNER JOIN PRODUCTO PR ON PR.ID = DE.ID_PRODUCTO', [], {
     outFormat: oracledb.OUT_FORMAT_OBJECT,
   });
   res.status(200).json(result.rows);
