@@ -3,7 +3,7 @@ const { cns } = require('../config/index');
 
 const getFactura = async (req, res) => {
   const conn = await oracledb.getConnection(cns);
-  const result = await conn.execute('SELECT * FROM FACTURA', [], {
+  const result = await conn.execute('SELECT * FROM FACTURA ORDER BY ID', [], {
     outFormat: oracledb.OUT_FORMAT_OBJECT,
   });
   res.status(200).json(result.rows);
